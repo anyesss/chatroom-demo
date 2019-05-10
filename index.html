@@ -21,10 +21,6 @@
     <h5>chat room damo</h5>
     <hr>
     <ul id="chat-list">
-        <li>昵称：hello world</li>
-        <li>昵称：hello world</li>
-        <li>昵称：hello world</li>
-        <li>昵称：hello world</li>
     </ul>
     <hr>
 </div>
@@ -42,24 +38,25 @@
         ws = new WebSocket(addr);
 
         ws.onopen = function () {
-            document.getElementById('connect-list').innerHTML = '已连接';
+            document.getElementById('connect-list').innerText = '已连接';
             console.log('connect...');
         };
 
         ws.onmessage = function (evt) {
+            let res = JSON.parse(evt.data);
             let liElement = document.createElement('li');
-            liElement.innerHTML = '用户：' + evt.data;
+            liElement.innerHTML = res.msg;
             document.getElementById('chat-list').appendChild(liElement);
             console.log(evt.data);
         };
 
         ws.onclose = function () {
-            document.getElementById('connect-list').innerHTML = '未连接';
+            document.getElementById('connect-list').innerText = '未连接';
             console.log('websocket closed');
         };
 
         ws.onerror = function () {
-            document.getElementById('connect-list').innerHTML = '系统错误';
+            document.getElementById('connect-list').innerText = '系统错误';
             console.log('error');
         }
     }
