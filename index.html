@@ -3,13 +3,32 @@
 <head>
     <title>chat room demo</title>
     <meta http-equiv="content-type" content="txt/html; charset=utf-8" />
+    <style>
+        #chat-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #chat-list li {
+            border: 1px solid #ccc;
+            margin: 10px;
+            padding: 5px;
+        }
+    </style>
 </head>
 <body>
 <div>
     <h5>chat room damo</h5>
-    <ul class="chat-list">
+    <hr>
+    <ul id="chat-list">
+        <li>昵称：hello world</li>
+        <li>昵称：hello world</li>
+        <li>昵称：hello world</li>
+        <li>昵称：hello world</li>
     </ul>
+    <hr>
 </div>
+当前状态：<span id="connect-status">未连接</span>
 <button type="button" id="connect" onclick="connectChatRoom()">连接</button>
 <button type="button" id="disconnect" onclick="disconnectChatRoom()">断开</button>
 <input type="text" name="msg" id="msg">
@@ -23,24 +42,35 @@
         ws = new WebSocket(addr);
 
         ws.onopen = function () {
+            document.getElementById('connect-list').innerHTML = '已连接';
             console.log('connect...');
         };
 
         ws.onmessage = function (evt) {
+            let liElement = document.createElement('li');
+            liElement.innerHTML = '用户：' + evt.data;
+            document.getElementById('chat-list').appendChild(liElement);
             console.log(evt.data);
         };
 
         ws.onclose = function () {
+            document.getElementById('connect-list').innerHTML = '未连接';
             console.log('websocket closed');
         };
 
         ws.onerror = function () {
+            document.getElementById('connect-list').innerHTML = '系统错误';
             console.log('error');
         }
     }
 
     function disconnectChatRoom() {
-        console.log('disconnect...');
+        if (!ws) {
+            alert('未连接');
+            return;
+        }
+
+        ws.close();
     }
 
     function sendMsg() {
@@ -51,6 +81,6 @@
 
         let msg = document.getElementById('msg').value;
         ws.send(msg);
-        console.log('send msg...');
+        document.getElementById('msg').value = '';
     }
 </script>
