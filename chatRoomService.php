@@ -8,25 +8,33 @@ class chatRoom
     {
         $this->server = new Swoole\WebSocket\Server('0.0.0.0', 9501);
 
-        $this->server->on('open', 'openHandle');
-        $this->server->on('message', 'msgHandle');
-        $this->server->on('close', 'closeHandle');
+        $this->server->on('open', function (swoole_websocket_server $server, $request) {
+            $this->openHandle($server, $request);
+        });
+
+        $this->server->on('message', function (Swoole\WebSocket\Server $server, $frame) {
+            $this->msgHandle($server, $frame);
+        });
+
+        $this->server->on('close', function ($ser, $fd) {
+            $this->closeHandle($ser, $fd);
+        });
 
         $this->server->start();
     }
 
-    public function openHandle(swoole_websocket_server $server, $request)
+    private function openHandle(swoole_websocket_server $server, $request)
     {
         echo "server: handshake success with fd {$request->fd}\n";
     }
 
-    public function msgHandle(Swoole\WebSocket\Server $server, $frame)
+    private function msgHandle(Swoole\WebSocket\Server $server, $frame)
     {
         echo "receive from {$frame->fd}:{$frame->data},opcode:{$frame->opcode},fin:{$frame->finish}\n";
         $server->push($frame->fd, "this is server");
     }
 
-    public function closeHandle($ser, $fd)
+    private function closeHandle($ser, $fd)
     {
         echo "client {$fd} closed\n";
     }
