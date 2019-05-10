@@ -47,8 +47,7 @@ class chatRoom
     private function pushToAllUser($msg)
     {
         foreach ($this->server->connections as $fd) {
-            // 需要先判断是否是正确的websocket连接，否则有可能会push失败
-            if ($this->server->isEstablished($fd)) {
+            if ($this->server->isEstablished($fd) && $this->server->exist($fd)) {
                 $this->server->push($fd, $msg);
             }
         }
@@ -61,7 +60,10 @@ class chatRoom
 
     private function formatUserPush($msg)
     {
-        return json_encode(['type' => 1, 'msg' => '用户：' .  htmlspecialchars($msg)]);
+        $formatMsg = json_decode($msg, true);
+        $formatMsg = sprintf('%s：%s', $formatMsg['nickname'], $formatMsg['msg']);
+
+        return json_encode(['type' => 1, 'msg' => htmlspecialchars($formatMsg)]);
     }
 
 }

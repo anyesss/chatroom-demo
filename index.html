@@ -18,7 +18,7 @@
 </head>
 <body>
 <div>
-    <h5>chat room damo</h5>
+    <h5>chat room demo</h5>
     <hr>
     <ul id="chat-list">
     </ul>
@@ -27,7 +27,8 @@
 当前状态：<span id="connect-status">未连接</span>
 <button type="button" id="connect" onclick="connectChatRoom()">连接</button>
 <button type="button" id="disconnect" onclick="disconnectChatRoom()">断开</button>
-<input type="text" name="msg" id="msg">
+昵称：<input type="text" id="nickname" name="nickname">
+消息：<input type="text" name="msg" id="msg">
 <button type="button" id="send-msg" onclick="sendMsg()">发送消息</button>
 </body>
 </html>
@@ -71,13 +72,20 @@
     }
 
     function sendMsg() {
+        if (document.getElementById('nickname').value === '') {
+            alert('昵称不能为空');
+            return;
+        }
+
         if (!ws) {
             alert('请先连接服务器');
             return;
         }
 
-        let msg = document.getElementById('msg').value;
-        ws.send(msg);
+        let data = {};
+        data['msg'] = document.getElementById('msg').value;
+        data['nickname'] = document.getElementById('nickname').value;
+        ws.send(JSON.stringify(data));
         document.getElementById('msg').value = '';
     }
 </script>
