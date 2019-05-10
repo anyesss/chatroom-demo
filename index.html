@@ -38,7 +38,7 @@
         ws = new WebSocket(addr);
 
         ws.onopen = function () {
-            document.getElementById('connect-list').innerText = '已连接';
+            document.getElementById('connect-status').innerText = '已连接';
             console.log('connect...');
         };
 
@@ -51,12 +51,12 @@
         };
 
         ws.onclose = function () {
-            document.getElementById('connect-list').innerText = '未连接';
+            document.getElementById('connect-status').innerText = '未连接';
             console.log('websocket closed');
         };
 
         ws.onerror = function () {
-            document.getElementById('connect-list').innerText = '系统错误';
+            document.getElementById('connect-status').innerText = '系统错误';
             console.log('error');
         }
     }
